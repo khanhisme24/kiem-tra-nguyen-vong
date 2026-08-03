@@ -1,14 +1,16 @@
 // ============ CẤU HÌNH ============
-const DATA_URL = "data/hai-duong-2025.json";
+const MANIFEST_URL = "data/manifest.json";
 const NGUONG_VUA_DU = 1.0; // lệch trong khoảng này => xếp vào nhóm "vừa đủ"
 
 // ============ STATE ============
-let DATA = null;
+let MANIFEST = null; // danh mục các tỉnh có sẵn dữ liệu
+let DATA = null;      // dữ liệu của tỉnh đang được chọn
 
 // ============ DOM ============
 const $ = (id) => document.getElementById(id);
 
 const form = $("score-form");
+const tinhThanhEl = $("tinh-thanh");
 const loaiTruongEl = $("loai-truong");
 const monChuyenWrap = $("wrap-mon-chuyen");
 const monChuyenEl = $("mon-chuyen");
@@ -30,10 +32,43 @@ init();
 
 async function init() {
   try {
-    const res = await fetch(DATA_URL);
+    const res = await fetch(MANIFEST_URL);
+    MANIFEST = await res.json();
+  } catch (err) {
+    emptyHint.hidden = false;
+    emptyHint.textContent = "Không tải được danh mục tỉnh/thành (data/manifest.json). Kiểm tra lại đường dẫn file.";
+    console.error(err);
+    return;
+  }
+
+  fillSelect(tinhThanhEl, MANIFEST.tinhThanh, (t) => t.ma, (t) => t.ten);
+  tinhThanhEl.addEventListener("change", () => loadTinh(tinhThanhEl.value));
+
+  loaiTruongEl.addEventListener("change", onLoaiTruongChange);
+  form.addEventListener("submit", onSubmit);
+  scoreInputs.forEach((id) => {
+    const el = $(id);
+    el.addEventListener("input", () => clearFieldError(id)); // xóa lỗi cũ khi đang gõ lại
+    el.addEventListener("blur", () => checkScoreOnBlur(id));
+  });
+  onLoaiTruongChange();
+
+  // Mặc định load tỉnh đầu tiên trong danh mục
+  if (MANIFEST.tinhThanh?.length) await loadTinh(MANIFEST.tinhThanh[0].ma);
+}
+
+// Tải dữ liệu của 1 tỉnh cụ thể (điểm chuẩn, công thức, danh sách trường...)
+// và làm mới lại các dropdown phụ thuộc (ưu tiên, khuyến khích, môn chuyên, khu vực).
+async function loadTinh(ma) {
+  const tinh = MANIFEST.tinhThanh.find((t) => t.ma === ma);
+  if (!tinh) return;
+
+  try {
+    const res = await fetch(tinh.file);
     DATA = await res.json();
   } catch (err) {
-    emptyHint.textContent = "Không tải được dữ liệu điểm chuẩn (data/hai-duong-2025.json). Kiểm tra lại đường dẫn file.";
+    emptyHint.hidden = false;
+    emptyHint.textContent = `Không tải được dữ liệu điểm chuẩn của ${tinh.ten} (${tinh.file}). Kiểm tra lại đường dẫn file.`;
     console.error(err);
     return;
   }
@@ -45,6 +80,7 @@ async function init() {
   fillSelect(khuyenKhichEl, DATA.congThuc.khuyenKhich, (o) => o.giai, (o) => `${o.ten} (+${o.diem})`);
   fillSelect(monChuyenEl, DATA.lopChuyen.monHoc, (o) => o.ten, (o) => o.ten);
 
+  khuVucEl.innerHTML = '<option value="">Tất cả khu vực trong tỉnh</option>';
   const khuVucSet = new Set();
   DATA.truongCongLap.forEach((t) => t.khuVuc && khuVucSet.add(t.khuVuc));
   if (DATA.lopChuyen.khuVuc) khuVucSet.add(DATA.lopChuyen.khuVuc);
@@ -55,14 +91,10 @@ async function init() {
     khuVucEl.appendChild(opt);
   });
 
-  loaiTruongEl.addEventListener("change", onLoaiTruongChange);
-  form.addEventListener("submit", onSubmit);
-  scoreInputs.forEach((id) => {
-    const el = $(id);
-    el.addEventListener("input", () => clearFieldError(id)); // xóa lỗi cũ khi đang gõ lại
-    el.addEventListener("blur", () => checkScoreOnBlur(id));
-  });
-  onLoaiTruongChange();
+  // Đổi tỉnh thì kết quả cũ (nếu có) không còn đúng nữa — ẩn đi, chờ tính lại.
+  resultsEl.hidden = true;
+  emptyHint.hidden = false;
+  emptyHint.textContent = `Đã chuyển sang dữ liệu ${tinh.ten}. Điền điểm rồi bấm "Tính điểm" để xem kết quả nhé.`;
 }
 
 // ============ VALIDATE ĐIỂM (0–10, chỉ chấp nhận số) ============

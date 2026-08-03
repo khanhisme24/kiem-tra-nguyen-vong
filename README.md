@@ -9,7 +9,8 @@ Web tĩnh (thuần HTML/CSS/JS, không cần build) giúp học sinh nhập đi�
   - *Công lập*: ĐXT = Toán + Văn + Môn thứ ba + điểm ưu tiên + điểm khuyến khích.
   - *Chuyên Nguyễn Trãi*: ĐXT = Toán + Văn + Tiếng Anh + 3 × điểm môn chuyên, chọn theo từng môn chuyên đăng ký.
 - **Cộng điểm ưu tiên và điểm khuyến khích** theo đúng các mức quy định (nhóm ưu tiên 1/2/3, giải Nhất/Nhì/Ba cấp tỉnh).
-- **Lọc trường theo khu vực** (huyện/thị xã/thành phố) để chỉ xem những trường gần nơi ở.
+- **Chọn tỉnh/thành** ở đầu phiếu — mỗi tỉnh có bộ dữ liệu và danh sách khu vực (huyện/thị xã) riêng, dễ mở rộng thêm tỉnh mới sau này.
+- **Lọc trường theo khu vực** (huyện/thị xã/thành phố) trong tỉnh đã chọn, để chỉ xem những trường gần nơi ở.
 - **Phân loại kết quả thành 3 nhóm** so với điểm chuẩn năm ngoái của từng trường/nguyện vọng:
   - ✅ Đủ điểm — an toàn (cao hơn ≥ 1 điểm)
   - ⚠️ Vừa đủ — cân não (lệch trong khoảng ±1 điểm)
@@ -49,9 +50,14 @@ python3 -m http.server 8000
 
 ## Thêm tỉnh/thành khác
 
-1. Tạo file `data/<ten-tinh>.json` theo đúng cấu trúc của `hai-duong-2025.json`.
-2. Thêm dòng tương ứng vào `data/manifest.json`.
-3. Hiện tại `script.js` đang load thẳng 1 tỉnh cố định qua biến `DATA_URL` — nếu muốn cho người dùng chọn tỉnh, cần thêm 1 dropdown tỉnh vào `index.html` và sửa `init()` trong `script.js` để đọc `manifest.json` trước rồi load file tỉnh tương ứng.
+Không cần sửa code — chỉ cần thêm dữ liệu:
+
+1. Tạo file `data/<ten-tinh>.json` theo đúng cấu trúc của `hai-duong-2025.json` (copy file này rồi thay số liệu).
+2. Thêm 1 dòng vào `data/manifest.json`, ví dụ:
+   ```json
+   { "ma": "hung-yen", "ten": "Hưng Yên", "file": "data/hung-yen-2025.json" }
+   ```
+3. Mở lại trang web — dropdown **"Tỉnh/Thành"** sẽ tự động hiện thêm tỉnh mới, người dùng chọn tỉnh nào thì dropdown **"Lọc theo khu vực"** (huyện/thị xã) cũng tự cập nhật theo đúng danh sách huyện của tỉnh đó.
 
 ## Cấu trúc file
 
