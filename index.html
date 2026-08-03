@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tra điểm chuẩn lớp 10 — Em đỗ trường nào?</title>
+<meta name="description" content="Nhập điểm ba môn thi để xem trường THPT nào trong tầm tay, trường nào vừa đủ, trường nào còn thiếu điểm.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,500&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="sheet">
+
+  <header class="hero">
+    <p class="eyebrow">SỞ GIÁO DỤC &amp; ĐÀO TẠO · TUYỂN SINH LỚP 10</p>
+    <h1>Em được bao nhiêu điểm?</h1>
+    <p class="hero-sub">Nhập điểm ba môn thi, xem ngay trường nào chắc suất, trường nào cân não, trường nào nên gạch đi.</p>
+  </header>
+
+  <!-- PHIẾU TRA ĐIỂM — styled like a tear-off exam slip -->
+  <form class="ticket" id="score-form" novalidate>
+    <div class="ticket-head">
+      <span class="ticket-label">Phiếu tra điểm</span>
+      <span class="ticket-year" id="nam-hoc">2025 – 2026</span>
+    </div>
+
+    <div class="field-row three">
+      <div class="field">
+        <label for="diem-toan">Toán</label>
+        <input type="number" class="score-input" id="diem-toan" min="0" max="10" step="0.1" placeholder="↑ ↓ để chọn">
+        <span class="field-error" id="err-diem-toan"></span>
+      </div>
+      <div class="field">
+        <label for="diem-van">Ngữ văn</label>
+        <input type="number" class="score-input" id="diem-van" min="0" max="10" step="0.1" placeholder="↑ ↓ để chọn">
+        <span class="field-error" id="err-diem-van"></span>
+      </div>
+      <div class="field">
+        <label for="diem-mon3" id="label-mon3">Môn thứ ba</label>
+        <input type="number" class="score-input" id="diem-mon3" min="0" max="10" step="0.1" placeholder="↑ ↓ để chọn">
+        <span class="field-error" id="err-diem-mon3"></span>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="loai-truong">Loại trường muốn xét</label>
+        <select id="loai-truong">
+          <option value="conglap">Công lập (Toán, Văn, Môn thứ ba)</option>
+          <option value="chuyen">Chuyên Nguyễn Trãi (Toán, Văn, Anh + môn chuyên)</option>
+        </select>
+      </div>
+      <div class="field" id="wrap-mon-chuyen" hidden>
+        <label for="mon-chuyen">Môn chuyên đăng ký</label>
+        <select id="mon-chuyen"></select>
+      </div>
+    </div>
+
+    <div class="field-row" id="wrap-diem-chuyen" hidden>
+      <div class="field">
+        <label for="diem-chuyen">Điểm bài thi môn chuyên (hệ số 3)</label>
+        <input type="number" class="score-input" id="diem-chuyen" min="0" max="10" step="0.1" placeholder="↑ ↓ để chọn">
+        <span class="field-error" id="err-diem-chuyen"></span>
+      </div>
+    </div>
+
+    <div class="field-row two">
+      <div class="field">
+        <label for="uu-tien">Diện ưu tiên</label>
+        <select id="uu-tien"></select>
+      </div>
+      <div class="field">
+        <label for="khuyen-khich">Điểm khuyến khích</label>
+        <select id="khuyen-khich"></select>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="khu-vuc">Lọc theo khu vực (huyện/thị xã/thành phố)</label>
+        <select id="khu-vuc">
+          <option value="">Tất cả khu vực trong tỉnh</option>
+        </select>
+      </div>
+    </div>
+
+    <button type="submit" class="btn-tinh">Tính điểm &amp; xem kết quả</button>
+    <p class="submit-error" id="submit-error" hidden>Điểm không hợp lệ. Vui lòng kiểm tra lại các ô được tô đỏ bên trên.</p>
+    <p class="ticket-footnote" id="cong-thuc-hint">ĐXT = Toán + Văn + Môn thứ ba + điểm ưu tiên + điểm khuyến khích · Dùng mũi tên (↑ ↓ hoặc nút bên phải ô) để nhập điểm, không gõ trực tiếp</p>
+  </form>
+
+  <!-- KẾT QUẢ -->
+  <section class="results" id="results" hidden>
+
+    <div class="score-banner">
+      <div class="stamp-wrap" id="stamp-wrap" aria-hidden="true"></div>
+      <div class="score-total">
+        <span class="score-label">Tổng điểm xét tuyển</span>
+        <span class="score-number" id="score-number">0.00</span>
+      </div>
+    </div>
+
+    <div class="tier" data-tier="du">
+      <h2><span class="tier-dot"></span>Đủ điểm — an toàn</h2>
+      <p class="tier-desc">Điểm của em cao hơn điểm chuẩn năm ngoái ít nhất 1 điểm. Vẫn nên có phương án dự phòng.</p>
+      <div class="tier-list" id="list-du"></div>
+    </div>
+
+    <div class="tier" data-tier="vua">
+      <h2><span class="tier-dot"></span>Vừa đủ — cân não</h2>
+      <p class="tier-desc">Điểm sát nút với điểm chuẩn (trong khoảng ±1 điểm). Rủi ro cao vì điểm chuẩn mỗi năm có thể xê dịch.</p>
+      <div class="tier-list" id="list-vua"></div>
+    </div>
+
+    <div class="tier" data-tier="thieu">
+      <h2><span class="tier-dot"></span>Thiếu điểm</h2>
+      <p class="tier-desc">Điểm của em thấp hơn điểm chuẩn năm ngoái hơn 1 điểm. Cân nhắc nguyện vọng khác thực tế hơn.</p>
+      <div class="tier-list" id="list-thieu"></div>
+    </div>
+
+  </section>
+
+  <p class="empty-hint" id="empty-hint">Điền đủ điểm ba môn ở phiếu bên trên rồi bấm "Tính điểm" để xem kết quả nhé.</p>
+
+  <footer class="site-footer">
+    <p>Dữ liệu điểm chuẩn: <span id="nguon-du-lieu">—</span>. Điểm chuẩn năm nay có thể khác năm ngoái — công cụ này chỉ mang tính tham khảo, không thay thế thông báo chính thức của Sở GD&amp;ĐT.</p>
+  </footer>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

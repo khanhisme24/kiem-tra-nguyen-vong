@@ -1,0 +1,88 @@
+{
+  "tinh": "Hải Dương",
+  "namHoc": "2025-2026",
+  "nguon": "Sở GD&ĐT Hải Dương – Quyết định 634/QĐ-UBND (11/3/2025) và Quyết định 1088/QĐ-SGDĐT (18/6/2025)",
+  "ghiChu": "Trường THPT công lập lấy điểm theo Nguyện vọng 1 (NV1) và Nguyện vọng 2 (NV2, nếu còn chỉ tiêu). Trường Chuyên Nguyễn Trãi xét theo từng môn chuyên riêng. Địa danh 'khuVuc' là huyện/thị xã/thành phố cũ trước sáp nhập hành chính 2025 — vui lòng cập nhật lại tên xã/phường mới nếu tỉnh đã công bố.",
+  "congThuc": {
+    "congLap": {
+      "moTa": "Điểm xét tuyển = Điểm Toán + Điểm Ngữ văn + Điểm môn thi thứ ba + Điểm ưu tiên + Điểm khuyến khích",
+      "dieuKien": "Không có bài thi nào từ 1.0 điểm trở xuống"
+    },
+    "chuyen": {
+      "moTa": "Điểm xét tuyển = Điểm Toán + Điểm Ngữ văn + Điểm Tiếng Anh (hệ số 1) + Điểm môn chuyên (hệ số 3)",
+      "truong": "THPT Chuyên Nguyễn Trãi"
+    },
+    "uuTien": [
+      { "nhom": 0, "ten": "Không thuộc diện ưu tiên", "diem": 0 },
+      { "nhom": 3, "ten": "Nhóm 3", "diem": 1.0 },
+      { "nhom": 2, "ten": "Nhóm 2", "diem": 1.5 },
+      { "nhom": 1, "ten": "Nhóm 1", "diem": 2.0 }
+    ],
+    "khuyenKhich": [
+      { "giai": "khong", "ten": "Không có giải", "diem": 0 },
+      { "giai": "ba", "ten": "Giải Ba cấp tỉnh", "diem": 0.5 },
+      { "giai": "nhi", "ten": "Giải Nhì cấp tỉnh", "diem": 1.0 },
+      { "giai": "nhat", "ten": "Giải Nhất cấp tỉnh", "diem": 1.5 }
+    ]
+  },
+  "truongCongLap": [
+    { "ten": "Hồng Quang", "khuVuc": "Thành phố Hải Dương", "nv1": 24.30, "nv2": null },
+    { "ten": "Nguyễn Văn Cừ", "khuVuc": "Thành phố Hải Dương", "nv1": 21.40, "nv2": 22.35 },
+    { "ten": "Nguyễn Du", "khuVuc": "Thành phố Hải Dương", "nv1": 21.45, "nv2": 22.55 },
+    { "ten": "Chí Linh", "khuVuc": "Thành phố Chí Linh", "nv1": 21.10, "nv2": null },
+    { "ten": "Phả Lại", "khuVuc": "Thành phố Chí Linh", "nv1": 17.35, "nv2": 19.50 },
+    { "ten": "Trần Phú", "khuVuc": "Thị xã Kinh Môn", "nv1": 17.40, "nv2": 18.05 },
+    { "ten": "Bến Tắm", "khuVuc": "Thành phố Chí Linh", "nv1": 16.40, "nv2": 17.00 },
+    { "ten": "Nguyễn Thị Duệ", "khuVuc": "Thành phố Chí Linh", "nv1": 13.65, "nv2": 14.30 },
+    { "ten": "Kinh Môn", "khuVuc": "Thị xã Kinh Môn", "nv1": 17.60, "nv2": 18.70 },
+    { "ten": "Phúc Thành", "khuVuc": "Thị xã Kinh Môn", "nv1": 17.65, "nv2": null },
+    { "ten": "Nhị Chiểu", "khuVuc": "Thị xã Kinh Môn", "nv1": 17.65, "nv2": 18.95 },
+    { "ten": "Kinh Môn II", "khuVuc": "Thị xã Kinh Môn", "nv1": 17.85, "nv2": 21.25 },
+    { "ten": "Kim Thành", "khuVuc": "Huyện Kim Thành", "nv1": 15.40, "nv2": 16.55 },
+    { "ten": "Đồng Gia", "khuVuc": "Huyện Kim Thành", "nv1": 18.70, "nv2": 20.10 },
+    { "ten": "Kim Thành II", "khuVuc": "Huyện Kim Thành", "nv1": 17.90, "nv2": 18.55 },
+    { "ten": "Nam Sách", "khuVuc": "Huyện Nam Sách", "nv1": 21.30, "nv2": null },
+    { "ten": "Mạc Đĩnh Chi", "khuVuc": "Huyện Nam Sách", "nv1": 18.45, "nv2": 19.30 },
+    { "ten": "Nam Sách II", "khuVuc": "Huyện Nam Sách", "nv1": 19.30, "nv2": 20.25 },
+    { "ten": "Thanh Hà", "khuVuc": "Huyện Thanh Hà", "nv1": 20.15, "nv2": 21.10 },
+    { "ten": "Hà Bắc", "khuVuc": "Huyện Thanh Hà", "nv1": 18.05, "nv2": 19.15 },
+    { "ten": "Hà Đông", "khuVuc": "Huyện Thanh Hà", "nv1": 16.75, "nv2": 17.30 },
+    { "ten": "Thanh Bình", "khuVuc": "Huyện Thanh Hà", "nv1": 17.20, "nv2": 17.80 },
+    { "ten": "Tứ Kỳ", "khuVuc": "Huyện Tứ Kỳ", "nv1": 19.95, "nv2": 24.15 },
+    { "ten": "Cầu Xe", "khuVuc": "Huyện Tứ Kỳ", "nv1": 18.05, "nv2": 18.70 },
+    { "ten": "Hưng Đạo", "khuVuc": "Huyện Tứ Kỳ", "nv1": 18.75, "nv2": 19.50 },
+    { "ten": "Gia Lộc", "khuVuc": "Huyện Gia Lộc", "nv1": 20.40, "nv2": null },
+    { "ten": "Đoàn Thượng", "khuVuc": "Huyện Gia Lộc", "nv1": 18.80, "nv2": null },
+    { "ten": "Gia Lộc II", "khuVuc": "Huyện Gia Lộc", "nv1": 19.05, "nv2": 19.65 },
+    { "ten": "Ninh Giang", "khuVuc": "Huyện Ninh Giang", "nv1": 19.55, "nv2": null },
+    { "ten": "Quang Trung", "khuVuc": "Huyện Ninh Giang", "nv1": 18.65, "nv2": 19.30 },
+    { "ten": "Khúc Thừa Dụ", "khuVuc": "Huyện Ninh Giang", "nv1": 18.00, "nv2": 18.65 },
+    { "ten": "Thanh Miện", "khuVuc": "Huyện Thanh Miện", "nv1": 19.80, "nv2": null },
+    { "ten": "Thanh Miện II", "khuVuc": "Huyện Thanh Miện", "nv1": 19.00, "nv2": 19.70 },
+    { "ten": "Thanh Miện III", "khuVuc": "Huyện Thanh Miện", "nv1": 18.05, "nv2": 19.00 },
+    { "ten": "Bình Giang", "khuVuc": "Huyện Bình Giang", "nv1": 20.65, "nv2": null },
+    { "ten": "Kẻ Sặt", "khuVuc": "Huyện Bình Giang", "nv1": 18.50, "nv2": 19.10 },
+    { "ten": "Đường An", "khuVuc": "Huyện Bình Giang", "nv1": 19.25, "nv2": 20.55 },
+    { "ten": "Cẩm Giàng", "khuVuc": "Huyện Cẩm Giàng", "nv1": 19.85, "nv2": null },
+    { "ten": "Tuệ Tĩnh", "khuVuc": "Huyện Cẩm Giàng", "nv1": 19.55, "nv2": 20.15 },
+    { "ten": "Cẩm Giàng II", "khuVuc": "Huyện Cẩm Giàng", "nv1": 18.60, "nv2": 19.70 }
+  ],
+  "lopChuyen": {
+    "ten": "THPT Chuyên Nguyễn Trãi",
+    "khuVuc": "Thành phố Hải Dương",
+    "monHoc": [
+      { "ten": "Chuyên Toán", "diemChuan": 44.00 },
+      { "ten": "Chuyên Tin (xét theo môn Tin học)", "diemChuan": 43.85 },
+      { "ten": "Chuyên Tin (xét theo môn Toán)", "diemChuan": 40.60 },
+      { "ten": "Chuyên Ngữ văn", "diemChuan": 46.05 },
+      { "ten": "Chuyên Tiếng Anh", "diemChuan": 47.90 },
+      { "ten": "Chuyên Tiếng Pháp", "diemChuan": 45.15 },
+      { "ten": "Chuyên Tiếng Nga", "diemChuan": 42.50 },
+      { "ten": "Chuyên Vật lý", "diemChuan": 39.70 },
+      { "ten": "Chuyên Hóa học", "diemChuan": 40.30 },
+      { "ten": "Chuyên Sinh học", "diemChuan": 39.15 },
+      { "ten": "Chuyên Địa lý", "diemChuan": 43.95 },
+      { "ten": "Chuyên Lịch sử", "diemChuan": 37.40 }
+    ]
+  }
+}
