@@ -1,16 +1,25 @@
 # Tra điểm chuẩn lớp 10 — Em đỗ trường nào?
 
-Web tĩnh (HTML/CSS/JS thuần, không cần build) giúp học sinh nhập điểm 3 môn thi vào lớp 10 và xem ngay:
+Web tĩnh (thuần HTML/CSS/JS, không cần build) giúp học sinh nhập điểm thi vào lớp 10 và biết ngay mình đang ở nhóm nào so với điểm chuẩn năm ngoái.
 
-- ✅ **Đủ điểm** — cao hơn điểm chuẩn năm ngoái ≥ 1 điểm
-- ⚠️ **Vừa đủ** — lệch trong khoảng ±1 điểm so với điểm chuẩn
-- ❌ **Thiếu điểm** — thấp hơn điểm chuẩn năm ngoái > 1 điểm
+## Tính năng
 
-Có thể lọc trường theo khu vực (huyện/thị xã/thành phố) và chọn xét theo trường công lập hoặc lớp chuyên (Chuyên Nguyễn Trãi).
+- **Nhập điểm 3 môn** (Toán, Ngữ văn, Môn thứ ba) và tự động tính **điểm xét tuyển** theo đúng công thức của Sở GD&ĐT.
+- **Xét theo 2 loại trường:**
+  - *Công lập*: ĐXT = Toán + Văn + Môn thứ ba + điểm ưu tiên + điểm khuyến khích.
+  - *Chuyên Nguyễn Trãi*: ĐXT = Toán + Văn + Tiếng Anh + 3 × điểm môn chuyên, chọn theo từng môn chuyên đăng ký.
+- **Cộng điểm ưu tiên và điểm khuyến khích** theo đúng các mức quy định (nhóm ưu tiên 1/2/3, giải Nhất/Nhì/Ba cấp tỉnh).
+- **Lọc trường theo khu vực** (huyện/thị xã/thành phố) để chỉ xem những trường gần nơi ở.
+- **Phân loại kết quả thành 3 nhóm** so với điểm chuẩn năm ngoái của từng trường/nguyện vọng:
+  - ✅ Đủ điểm — an toàn (cao hơn ≥ 1 điểm)
+  - ⚠️ Vừa đủ — cân não (lệch trong khoảng ±1 điểm)
+  - ❌ Thiếu điểm (thấp hơn > 1 điểm)
+- **Kiểm tra dữ liệu đầu vào**: chỉ chấp nhận số từ 0–10, gõ sai ký tự hoặc vượt quá 10 sẽ hiện thông báo và yêu cầu nhập lại, tránh tính nhầm.
+- Giao diện lấy cảm hứng từ phiếu báo điểm và con dấu đỏ của Sở GD&ĐT — kết quả hiện ra kèm một "con dấu" đóng trực tiếp lên màn hình.
 
 ## Chạy thử ở máy local
 
-Không cần cài gì thêm, chỉ cần một server tĩnh vì trình duyệt chặn `fetch()` file JSON khi mở trực tiếp bằng `file://`:
+Cần một server tĩnh vì trình duyệt chặn `fetch()` file JSON khi mở trực tiếp bằng `file://`:
 
 ```bash
 cd tuyen-sinh-lop10
@@ -34,7 +43,7 @@ python3 -m http.server 8000
 
 ### ⚠️ Lưu ý quan trọng cần bạn kiểm tra lại
 
-1. **Trường "khuVuc"**: mình gán huyện/thị xã/thành phố dựa trên tên trường và hiểu biết chung (ví dụ trường "Tứ Kỳ" ở huyện Tứ Kỳ), một số trường mình chỉ suy đoán với độ tin cậy vừa phải (Trần Phú, Nguyễn Thị Duệ, Mạc Đĩnh Chi, Hà Bắc, Hà Đông, Thanh Bình, Cầu Xe, Hưng Đạo, Đoàn Thượng, Quang Trung, Khúc Thừa Dụ, Kẻ Sặt, Đường An, Tuệ Tĩnh). Vì Việt Nam vừa sáp nhập đơn vị hành chính năm 2025 (bỏ cấp huyện, chuyển sang tỉnh + xã/phường), tên gọi này có thể đã lỗi thời — bạn nên đối chiếu với danh sách chính thức của Sở GD&ĐT Hải Dương và sửa lại field `khuVuc` cho từng trường (chỉ cần sửa trực tiếp trong file JSON, không cần đụng vào code).
+1. **Trường "khuVuc"**: mình gán huyện/thị xã/thành phố dựa trên tên trường và hiểu biết chung, một số trường mình chỉ suy đoán với độ tin cậy vừa phải. Vì Việt Nam vừa sáp nhập đơn vị hành chính năm 2025 (bỏ cấp huyện, chuyển sang tỉnh + xã/phường), tên gọi này có thể đã lỗi thời — bạn nên đối chiếu với danh sách chính thức của Sở GD&ĐT Hải Dương và sửa lại field `khuVuc` cho từng trường (chỉ cần sửa trực tiếp trong file JSON, không cần đụng vào code).
 2. **Ngưỡng "vừa đủ"**: đang để cứng ±1.0 điểm trong `script.js` (biến `NGUONG_VUA_DU`). Bạn có thể chỉnh lại tùy ý.
 3. Điểm chuẩn của **năm sau** chắc chắn sẽ khác năm 2025 — công cụ này chỉ mang tính tham khảo dựa trên điểm chuẩn năm ngoái, không phải điểm chuẩn chính thức của năm thí sinh dự thi.
 

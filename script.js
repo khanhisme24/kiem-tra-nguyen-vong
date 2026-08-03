@@ -59,33 +59,42 @@ async function init() {
   form.addEventListener("submit", onSubmit);
   scoreInputs.forEach((id) => {
     const el = $(id);
-    el.addEventListener("input", () => validateScoreField(id));
-    khoaGoBanPhim(el);
+    el.addEventListener("input", () => clearFieldError(id)); // xóa lỗi cũ khi đang gõ lại
+    el.addEventListener("blur", () => checkScoreOnBlur(id));
   });
   onLoaiTruongChange();
 }
 
-// Chỉ cho phép chỉnh điểm bằng mũi tên (nút mũi tên trên ô hoặc phím ArrowUp/ArrowDown),
-// chặn mọi thao tác gõ số/dán trực tiếp bằng bàn phím.
-const PHIM_DUOC_PHEP = [
-  "ArrowUp", "ArrowDown", "Tab", "Shift", "Control", "Alt", "Meta", "Escape",
-];
-function khoaGoBanPhim(input) {
-  input.setAttribute("inputmode", "none"); // hạn chế bàn phím ảo bật lên trên di động
-  input.addEventListener("keydown", (e) => {
-    // vẫn cho phép tổ hợp phím hệ thống như Ctrl+C, Ctrl+Tab...
-    if (e.ctrlKey || e.metaKey) return;
-    if (!PHIM_DUOC_PHEP.includes(e.key)) e.preventDefault();
-  });
-  input.addEventListener("paste", (e) => e.preventDefault());
-  input.addEventListener("drop", (e) => e.preventDefault());
-  input.addEventListener("wheel", (e) => {
-    if (document.activeElement === input) e.preventDefault();
-  }, { passive: false });
+// ============ VALIDATE ĐIỂM (0–10, chỉ chấp nhận số) ============
+// Kiểm tra khi người dùng rời khỏi ô (blur) — không chặn giữa lúc đang gõ dở,
+// để không làm phiền khi họ đang gõ số thập phân như "8.5".
+function checkScoreOnBlur(id) {
+  const input = $(id);
+  const raw = input.value.trim();
+  if (raw === "") { clearFieldError(id); return; }
+
+  if (!isDiemHopLe(raw)) {
+    input.value = "";
+    setFieldError(input, $(`err-${id}`), "Điểm không hợp lệ.");
+    showModal("Ký tự không hợp lệ", "Điểm chỉ được nhập số từ 0 đến 10 (có thể có phần thập phân). Vui lòng nhập lại.", input);
+  } else {
+    clearFieldError(id);
+  }
+}
+
+// Số hợp lệ: chỉ gồm chữ số và tối đa 1 dấu chấm thập phân, nằm trong khoảng 0–10.
+function isDiemHopLe(raw) {
+  if (!/^\d+(\.\d+)?$/.test(raw)) return false;
+  const val = parseFloat(raw);
+  return val >= 0 && val <= 10;
+}
+
+function clearFieldError(id) {
+  const input = $(id);
+  setFieldError(input, $(`err-${id}`), "");
 }
 
 // Điểm bài thi ở Việt Nam chỉ nằm trong khoảng 0–10.
-// Không tự động sửa giá trị — chỉ báo lỗi rõ ràng và chặn tính điểm cho đến khi sửa đúng.
 function validateScoreField(id) {
   const input = $(id);
   const errEl = $(`err-${id}`);
@@ -93,20 +102,12 @@ function validateScoreField(id) {
 
   if (raw === "") {
     setFieldError(input, errEl, "");
-    return true; // để trống thì báo riêng ở bước submit, không báo "không hợp lệ" khi đang gõ dở
+    return true; // để trống thì báo riêng ở bước submit
   }
-
-  const val = parseFloat(raw);
-
-  if (Number.isNaN(val)) {
+  if (!isDiemHopLe(raw)) {
     setFieldError(input, errEl, "Điểm không hợp lệ.");
     return false;
   }
-  if (val > 10 || val < 0) {
-    setFieldError(input, errEl, "Điểm không hợp lệ (chỉ 0–10).");
-    return false;
-  }
-
   setFieldError(input, errEl, "");
   return true;
 }
@@ -116,6 +117,35 @@ function setFieldError(input, errEl, message) {
   input.classList.toggle("invalid", Boolean(message));
   input.setCustomValidity(message);
 }
+
+// ============ MODAL THÔNG BÁO LỖI ============
+const modalOverlay = $("modal-overlay");
+const modalTitle = $("modal-title");
+const modalMsg = $("modal-msg");
+const modalClose = $("modal-close");
+let modalFocusTarget = null;
+
+function showModal(title, message, focusTarget) {
+  modalTitle.textContent = title;
+  modalMsg.textContent = message;
+  modalFocusTarget = focusTarget || null;
+  modalOverlay.hidden = false;
+  modalClose.focus();
+}
+
+function hideModal() {
+  modalOverlay.hidden = true;
+  if (modalFocusTarget) modalFocusTarget.focus();
+  modalFocusTarget = null;
+}
+
+modalClose.addEventListener("click", hideModal);
+modalOverlay.addEventListener("click", (e) => {
+  if (e.target === modalOverlay) hideModal();
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && !modalOverlay.hidden) hideModal();
+});
 
 function fillSelect(selectEl, items, valueFn, labelFn) {
   selectEl.innerHTML = "";
@@ -133,8 +163,8 @@ function onLoaiTruongChange() {
   diemChuyenWrap.hidden = !isChuyen;
   labelMon3.textContent = isChuyen ? "Tiếng Anh" : "Môn thứ ba";
   congThucHint.textContent = isChuyen
-    ? "ĐXT = Toán + Văn + Tiếng Anh + 3 × Điểm môn chuyên · Dùng mũi tên (↑ ↓ hoặc nút bên phải ô) để nhập điểm"
-    : "ĐXT = Toán + Văn + Môn thứ ba + điểm ưu tiên + điểm khuyến khích · Dùng mũi tên (↑ ↓ hoặc nút bên phải ô) để nhập điểm";
+    ? "ĐXT = Toán + Văn + Tiếng Anh + 3 × Điểm môn chuyên"
+    : "ĐXT = Toán + Văn + Môn thứ ba + điểm ưu tiên + điểm khuyến khích";
 }
 
 function onSubmit(e) {
@@ -160,7 +190,12 @@ function onSubmit(e) {
 
   submitErrorEl.hidden = hopLe;
   if (!hopLe) {
-    oLoiDauTien.focus();
+    const oTrong = oLoiDauTien.value.trim() === "";
+    if (!oTrong) {
+      showModal("Ký tự không hợp lệ", "Điểm chỉ được nhập số từ 0 đến 10 (có thể có phần thập phân). Vui lòng nhập lại.", oLoiDauTien);
+    } else {
+      oLoiDauTien.focus();
+    }
     return;
   }
 

@@ -158,9 +158,74 @@ body{
 }
 
 .score-input{
-  caret-color: transparent;
-  cursor: default;
+  cursor: text;
 }
+
+/* ============ MODAL THÔNG BÁO LỖI ============ */
+.modal-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(30,58,95,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 100;
+}
+
+.modal-box{
+  background: var(--paper-card);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 28px 26px 24px;
+  max-width: 360px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 50px -20px rgba(30,58,95,0.5);
+  animation: modal-pop .2s cubic-bezier(.2,1.2,.4,1) both;
+}
+@keyframes modal-pop{
+  0%{ opacity: 0; transform: scale(.92) translateY(6px); }
+  100%{ opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-eyebrow{
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--stamp-red);
+  margin: 0 0 8px;
+}
+
+.modal-box h3{
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0 0 10px;
+}
+
+.modal-msg{
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin: 0 0 20px;
+  line-height: 1.5;
+}
+
+.modal-btn{
+  width: 100%;
+  padding: 12px 18px;
+  background: var(--ink);
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 14.5px;
+  cursor: pointer;
+}
+.modal-btn:hover{ background: #16304F; }
 
 .field input:focus, .field select:focus{
   outline: none;
