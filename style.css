@@ -166,11 +166,14 @@ body{
   position: fixed;
   inset: 0;
   background: rgba(30,58,95,0.35);
-  display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
   z-index: 100;
+  display: flex;
+}
+.modal-overlay[hidden]{
+  display: none;
 }
 
 .modal-box{
