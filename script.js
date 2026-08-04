@@ -354,7 +354,7 @@ function renderStamp(soDu, soVua, isFail) {
       <circle cx="50" cy="50" r="46" fill="none" stroke="${color}" stroke-width="3"/>
       <circle cx="50" cy="50" r="38" fill="none" stroke="${color}" stroke-width="1.5"/>
       <text x="50" y="47" text-anchor="middle" font-family="Be Vietnam Pro, sans-serif" font-weight="700" font-size="11.5" fill="${color}">${text}</text>
-      <text x="50" y="63" text-anchor="middle" font-family="Be Vietnam Pro, sans-serif" font-weight="600" font-size="7" fill="${color}" letter-spacing="1">SỞ GD&amp;ĐT</text>
+      <text x="50" y="63" text-anchor="middle" font-family="Be Vietnam Pro, sans-serif" font-weight="600" font-size="7" fill="${color}" letter-spacing="1">KHÔNG CHÍNH THỨC</text>
     </svg>
   `;
 }
