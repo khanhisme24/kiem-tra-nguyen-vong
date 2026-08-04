@@ -12,19 +12,17 @@ const $ = (id) => document.getElementById(id);
 const form = $("score-form");
 const tinhThanhEl = $("tinh-thanh");
 const loaiTruongEl = $("loai-truong");
-const tichHopOption = loaiTruongEl.querySelector('option[value="tichhop"]');
 const monChuyenWrap = $("wrap-mon-chuyen");
 const monChuyenEl = $("mon-chuyen");
 const diemChuyenWrap = $("wrap-diem-chuyen");
 const labelDiemChuyen = $("label-diem-chuyen");
-const diemTichHopWrap = $("wrap-diem-tichhop");
 const labelMon3 = $("label-mon3");
 const uuTienEl = $("uu-tien");
 const khuyenKhichEl = $("khuyen-khich");
 const khuVucEl = $("khu-vuc");
 const congThucHint = $("cong-thuc-hint");
 
-const scoreInputs = ["diem-toan", "diem-van", "diem-mon3", "diem-chuyen", "diem-tichhop"];
+const scoreInputs = ["diem-toan", "diem-van", "diem-mon3", "diem-chuyen"];
 
 const resultsEl = $("results");
 const emptyHint = $("empty-hint");
@@ -86,16 +84,10 @@ async function loadTinh(ma) {
   (DATA.truongChuyen || []).forEach((tr) => tr.monHoc.forEach((m) => monChuyenSet.add(m.ten)));
   fillSelect(monChuyenEl, [...monChuyenSet].sort(), (m) => m, (m) => m);
 
-  // Có/không có hệ tích hợp Tiếng Anh Đề án 5695 tùy tỉnh — ẩn lựa chọn nếu tỉnh không có.
-  const coTichHop = Array.isArray(DATA.truongTichHop) && DATA.truongTichHop.length > 0;
-  tichHopOption.hidden = !coTichHop;
-  if (!coTichHop && loaiTruongEl.value === "tichhop") loaiTruongEl.value = "conglap";
-
   khuVucEl.innerHTML = '<option value="">Tất cả khu vực trong tỉnh</option>';
   const khuVucSet = new Set();
   DATA.truongCongLap.forEach((t) => t.khuVuc && khuVucSet.add(t.khuVuc));
   (DATA.truongChuyen || []).forEach((t) => t.khuVuc && khuVucSet.add(t.khuVuc));
-  (DATA.truongTichHop || []).forEach((t) => t.khuVuc && khuVucSet.add(t.khuVuc));
   [...khuVucSet].sort().forEach((kv) => {
     const opt = document.createElement("option");
     opt.value = kv;
@@ -204,10 +196,9 @@ function fillSelect(selectEl, items, valueFn, labelFn) {
 }
 
 function onLoaiTruongChange() {
-  const loai = loaiTruongEl.value; // "conglap" | "chuyen" | "tichhop"
+  const loai = loaiTruongEl.value; // "conglap" | "chuyen"
   monChuyenWrap.hidden = loai !== "chuyen";
   diemChuyenWrap.hidden = loai !== "chuyen";
-  diemTichHopWrap.hidden = loai !== "tichhop";
   labelMon3.textContent = loai === "conglap" ? "Môn thứ ba" : "Ngoại ngữ";
 
   if (!DATA) return;
@@ -220,7 +211,6 @@ function onLoaiTruongChange() {
   const moTaMap = {
     conglap: DATA.congThuc.congLap?.moTa,
     chuyen: DATA.congThuc.chuyen?.moTa,
-    tichhop: DATA.congThuc.tichHop?.moTa,
   };
   congThucHint.textContent = moTaMap[loai] || "";
 }
@@ -233,7 +223,6 @@ function onSubmit(e) {
   const loai = loaiTruongEl.value;
   const idsCanKiemTra = ["diem-toan", "diem-van", "diem-mon3"];
   if (loai === "chuyen") idsCanKiemTra.push("diem-chuyen");
-  if (loai === "tichhop") idsCanKiemTra.push("diem-tichhop");
 
   let hopLe = true;
   let oLoiDauTien = null;
@@ -282,17 +271,6 @@ function onSubmit(e) {
       if (!m) return;
       danhSach.push({ ten: `${truong.ten} — ${m.ten}`, khuVuc: truong.khuVuc, chuan: m.nv1, nv: "NV1" });
       if (m.nv2 != null) danhSach.push({ ten: `${truong.ten} — ${m.ten}`, khuVuc: truong.khuVuc, chuan: m.nv2, nv: "NV2" });
-    });
-  } else if (loai === "tichhop") {
-    const diemTichHop = parseFloat($("diem-tichhop").value);
-    tong = toan + van + mon3 + diemTichHop;
-
-    danhSach = [];
-    (DATA.truongTichHop || []).forEach((t) => {
-      if (khuVucFilter && t.khuVuc !== khuVucFilter) return;
-      danhSach.push({ ten: t.ten, khuVuc: t.khuVuc, chuan: t.nv1, nv: "NV1" });
-      if (t.nv2 != null) danhSach.push({ ten: t.ten, khuVuc: t.khuVuc, chuan: t.nv2, nv: "NV2" });
-      if (t.nv3 != null) danhSach.push({ ten: t.ten, khuVuc: t.khuVuc, chuan: t.nv3, nv: "NV3" });
     });
   } else {
     tong = toan + van + mon3 + congThem;
