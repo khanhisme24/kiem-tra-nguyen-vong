@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,500&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=5">
+<link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 
@@ -85,11 +85,20 @@
       </div>
     </div>
 
-    <div class="field-row">
+    <div class="field-row two">
       <div class="field">
         <label for="khu-vuc">Lọc theo khu vực (huyện/thị xã/thành phố)</label>
         <select id="khu-vuc">
           <option value="">Tất cả khu vực trong tỉnh</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="nguyen-vong">Lọc theo nguyện vọng</label>
+        <select id="nguyen-vong">
+          <option value="">Tất cả nguyện vọng</option>
+          <option value="NV1">Nguyện vọng 1</option>
+          <option value="NV2">Nguyện vọng 2</option>
+          <option value="NV3">Nguyện vọng 3</option>
         </select>
       </div>
     </div>
@@ -147,6 +156,6 @@
   </div>
 </div>
 
-<script src="script.js?v=5"></script>
+<script src="script.js?v=6"></script>
 </body>
 </html>

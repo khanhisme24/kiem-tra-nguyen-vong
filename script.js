@@ -20,6 +20,7 @@ const labelMon3 = $("label-mon3");
 const uuTienEl = $("uu-tien");
 const khuyenKhichEl = $("khuyen-khich");
 const khuVucEl = $("khu-vuc");
+const nguyenVongEl = $("nguyen-vong");
 const congThucHint = $("cong-thuc-hint");
 
 const scoreInputs = ["diem-toan", "diem-van", "diem-mon3", "diem-chuyen"];
@@ -251,6 +252,7 @@ function onSubmit(e) {
   const van = parseFloat($("diem-van").value);
   const mon3 = parseFloat($("diem-mon3").value);
   const khuVucFilter = khuVucEl.value;
+  const nguyenVongFilter = nguyenVongEl.value;
 
   const uuTienObj = DATA.congThuc.uuTien.find((o) => String(o.nhom) === uuTienEl.value);
   const khuyenKhichObj = DATA.congThuc.khuyenKhich.find((o) => o.giai === khuyenKhichEl.value);
@@ -286,6 +288,8 @@ function onSubmit(e) {
         if (t.nv3 != null) danhSach.push({ ten: t.ten, khuVuc: t.khuVuc, chuan: t.nv3, nv: "NV3" });
       });
   }
+
+  if (nguyenVongFilter) danhSach = danhSach.filter((d) => d.nv === nguyenVongFilter);
 
   renderResults(tong, danhSach, isFail);
 }
@@ -353,8 +357,7 @@ function renderStamp(soDu, soVua, isFail) {
     <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
       <circle cx="50" cy="50" r="46" fill="none" stroke="${color}" stroke-width="3"/>
       <circle cx="50" cy="50" r="38" fill="none" stroke="${color}" stroke-width="1.5"/>
-      <text x="50" y="47" text-anchor="middle" font-family="Be Vietnam Pro, sans-serif" font-weight="700" font-size="11.5" fill="${color}">${text}</text>
-      <text x="50" y="63" text-anchor="middle" font-family="Be Vietnam Pro, sans-serif" font-weight="600" font-size="7" fill="${color}" letter-spacing="1">KHÔNG CHÍNH THỨC</text>
+      <text x="50" y="55" text-anchor="middle" font-family="Be Vietnam Pro, sans-serif" font-weight="700" font-size="11.5" fill="${color}">${text}</text>
     </svg>
   `;
 }
