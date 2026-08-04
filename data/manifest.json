@@ -1,5 +1,6 @@
 {
   "tinhThanh": [
-    { "ma": "hai-duong", "ten": "Hải Dương", "file": "data/hai-duong-2025.json" }
+    { "ma": "hai-duong", "ten": "Hải Dương", "file": "data/hai-duong-2025.json" },
+    { "ma": "ho-chi-minh", "ten": "Thành phố Hồ Chí Minh", "file": "data/ho-chi-minh-2025.json" }
   ]
 }

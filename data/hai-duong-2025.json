@@ -6,11 +6,12 @@
   "congThuc": {
     "congLap": {
       "moTa": "Điểm xét tuyển = Điểm Toán + Điểm Ngữ văn + Điểm môn thi thứ ba + Điểm ưu tiên + Điểm khuyến khích",
-      "dieuKien": "Không có bài thi nào từ 1.0 điểm trở xuống"
+      "dieuKien": "Không có bài thi nào từ 1.0 điểm trở xuống",
+      "diemLietToiDa": 1.0
     },
     "chuyen": {
-      "moTa": "Điểm xét tuyển = Điểm Toán + Điểm Ngữ văn + Điểm Tiếng Anh (hệ số 1) + Điểm môn chuyên (hệ số 3)",
-      "truong": "THPT Chuyên Nguyễn Trãi"
+      "moTa": "Điểm xét tuyển = Điểm Toán + Điểm Ngữ văn + Điểm Tiếng Anh (hệ số 1) + Điểm môn chuyên (hệ số 3) + Điểm ưu tiên, khuyến khích",
+      "heSoMonChuyen": 3
     },
     "uuTien": [
       { "nhom": 0, "ten": "Không thuộc diện ưu tiên", "diem": 0 },
@@ -67,22 +68,24 @@
     { "ten": "Tuệ Tĩnh", "khuVuc": "Huyện Cẩm Giàng", "nv1": 19.55, "nv2": 20.15 },
     { "ten": "Cẩm Giàng II", "khuVuc": "Huyện Cẩm Giàng", "nv1": 18.60, "nv2": 19.70 }
   ],
-  "lopChuyen": {
-    "ten": "THPT Chuyên Nguyễn Trãi",
-    "khuVuc": "Thành phố Hải Dương",
-    "monHoc": [
-      { "ten": "Chuyên Toán", "diemChuan": 44.00 },
-      { "ten": "Chuyên Tin (xét theo môn Tin học)", "diemChuan": 43.85 },
-      { "ten": "Chuyên Tin (xét theo môn Toán)", "diemChuan": 40.60 },
-      { "ten": "Chuyên Ngữ văn", "diemChuan": 46.05 },
-      { "ten": "Chuyên Tiếng Anh", "diemChuan": 47.90 },
-      { "ten": "Chuyên Tiếng Pháp", "diemChuan": 45.15 },
-      { "ten": "Chuyên Tiếng Nga", "diemChuan": 42.50 },
-      { "ten": "Chuyên Vật lý", "diemChuan": 39.70 },
-      { "ten": "Chuyên Hóa học", "diemChuan": 40.30 },
-      { "ten": "Chuyên Sinh học", "diemChuan": 39.15 },
-      { "ten": "Chuyên Địa lý", "diemChuan": 43.95 },
-      { "ten": "Chuyên Lịch sử", "diemChuan": 37.40 }
-    ]
-  }
+  "truongChuyen": [
+    {
+      "ten": "THPT Chuyên Nguyễn Trãi",
+      "khuVuc": "Thành phố Hải Dương",
+      "monHoc": [
+        { "ten": "Chuyên Toán", "nv1": 44.00, "nv2": null },
+        { "ten": "Chuyên Tin (xét theo môn Tin học)", "nv1": 43.85, "nv2": null },
+        { "ten": "Chuyên Tin (xét theo môn Toán)", "nv1": 40.60, "nv2": null },
+        { "ten": "Chuyên Ngữ văn", "nv1": 46.05, "nv2": null },
+        { "ten": "Chuyên Tiếng Anh", "nv1": 47.90, "nv2": null },
+        { "ten": "Chuyên Tiếng Pháp", "nv1": 45.15, "nv2": null },
+        { "ten": "Chuyên Tiếng Nga", "nv1": 42.50, "nv2": null },
+        { "ten": "Chuyên Vật lý", "nv1": 39.70, "nv2": null },
+        { "ten": "Chuyên Hóa học", "nv1": 40.30, "nv2": null },
+        { "ten": "Chuyên Sinh học", "nv1": 39.15, "nv2": null },
+        { "ten": "Chuyên Địa lý", "nv1": 43.95, "nv2": null },
+        { "ten": "Chuyên Lịch sử", "nv1": 37.40, "nv2": null }
+      ]
+    }
+  ]
 }

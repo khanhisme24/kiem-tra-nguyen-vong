@@ -12,16 +12,19 @@ const $ = (id) => document.getElementById(id);
 const form = $("score-form");
 const tinhThanhEl = $("tinh-thanh");
 const loaiTruongEl = $("loai-truong");
+const tichHopOption = loaiTruongEl.querySelector('option[value="tichhop"]');
 const monChuyenWrap = $("wrap-mon-chuyen");
 const monChuyenEl = $("mon-chuyen");
 const diemChuyenWrap = $("wrap-diem-chuyen");
+const labelDiemChuyen = $("label-diem-chuyen");
+const diemTichHopWrap = $("wrap-diem-tichhop");
 const labelMon3 = $("label-mon3");
 const uuTienEl = $("uu-tien");
 const khuyenKhichEl = $("khuyen-khich");
 const khuVucEl = $("khu-vuc");
 const congThucHint = $("cong-thuc-hint");
 
-const scoreInputs = ["diem-toan", "diem-van", "diem-mon3", "diem-chuyen"];
+const scoreInputs = ["diem-toan", "diem-van", "diem-mon3", "diem-chuyen", "diem-tichhop"];
 
 const resultsEl = $("results");
 const emptyHint = $("empty-hint");
@@ -51,7 +54,6 @@ async function init() {
     el.addEventListener("input", () => clearFieldError(id)); // xóa lỗi cũ khi đang gõ lại
     el.addEventListener("blur", () => checkScoreOnBlur(id));
   });
-  onLoaiTruongChange();
 
   // Mặc định load tỉnh đầu tiên trong danh mục
   if (MANIFEST.tinhThanh?.length) await loadTinh(MANIFEST.tinhThanh[0].ma);
@@ -78,18 +80,30 @@ async function loadTinh(ma) {
 
   fillSelect(uuTienEl, DATA.congThuc.uuTien, (o) => o.nhom, (o) => `${o.ten} (+${o.diem})`);
   fillSelect(khuyenKhichEl, DATA.congThuc.khuyenKhich, (o) => o.giai, (o) => `${o.ten} (+${o.diem})`);
-  fillSelect(monChuyenEl, DATA.lopChuyen.monHoc, (o) => o.ten, (o) => o.ten);
+
+  // Môn chuyên: gộp tất cả các môn có ở bất kỳ trường chuyên nào trong tỉnh, bỏ trùng.
+  const monChuyenSet = new Set();
+  (DATA.truongChuyen || []).forEach((tr) => tr.monHoc.forEach((m) => monChuyenSet.add(m.ten)));
+  fillSelect(monChuyenEl, [...monChuyenSet].sort(), (m) => m, (m) => m);
+
+  // Có/không có hệ tích hợp Tiếng Anh Đề án 5695 tùy tỉnh — ẩn lựa chọn nếu tỉnh không có.
+  const coTichHop = Array.isArray(DATA.truongTichHop) && DATA.truongTichHop.length > 0;
+  tichHopOption.hidden = !coTichHop;
+  if (!coTichHop && loaiTruongEl.value === "tichhop") loaiTruongEl.value = "conglap";
 
   khuVucEl.innerHTML = '<option value="">Tất cả khu vực trong tỉnh</option>';
   const khuVucSet = new Set();
   DATA.truongCongLap.forEach((t) => t.khuVuc && khuVucSet.add(t.khuVuc));
-  if (DATA.lopChuyen.khuVuc) khuVucSet.add(DATA.lopChuyen.khuVuc);
+  (DATA.truongChuyen || []).forEach((t) => t.khuVuc && khuVucSet.add(t.khuVuc));
+  (DATA.truongTichHop || []).forEach((t) => t.khuVuc && khuVucSet.add(t.khuVuc));
   [...khuVucSet].sort().forEach((kv) => {
     const opt = document.createElement("option");
     opt.value = kv;
     opt.textContent = kv;
     khuVucEl.appendChild(opt);
   });
+
+  onLoaiTruongChange();
 
   // Đổi tỉnh thì kết quả cũ (nếu có) không còn đúng nữa — ẩn đi, chờ tính lại.
   resultsEl.hidden = true;
@@ -190,23 +204,36 @@ function fillSelect(selectEl, items, valueFn, labelFn) {
 }
 
 function onLoaiTruongChange() {
-  const isChuyen = loaiTruongEl.value === "chuyen";
-  monChuyenWrap.hidden = !isChuyen;
-  diemChuyenWrap.hidden = !isChuyen;
-  labelMon3.textContent = isChuyen ? "Tiếng Anh" : "Môn thứ ba";
-  congThucHint.textContent = isChuyen
-    ? "ĐXT = Toán + Văn + Tiếng Anh + 3 × Điểm môn chuyên"
-    : "ĐXT = Toán + Văn + Môn thứ ba + điểm ưu tiên + điểm khuyến khích";
+  const loai = loaiTruongEl.value; // "conglap" | "chuyen" | "tichhop"
+  monChuyenWrap.hidden = loai !== "chuyen";
+  diemChuyenWrap.hidden = loai !== "chuyen";
+  diemTichHopWrap.hidden = loai !== "tichhop";
+  labelMon3.textContent = loai === "conglap" ? "Môn thứ ba" : "Ngoại ngữ";
+
+  if (!DATA) return;
+
+  if (loai === "chuyen") {
+    const heSo = DATA.congThuc.chuyen?.heSoMonChuyen ?? 2;
+    labelDiemChuyen.textContent = `Điểm bài thi môn chuyên (hệ số ${heSo})`;
+  }
+
+  const moTaMap = {
+    conglap: DATA.congThuc.congLap?.moTa,
+    chuyen: DATA.congThuc.chuyen?.moTa,
+    tichhop: DATA.congThuc.tichHop?.moTa,
+  };
+  congThucHint.textContent = moTaMap[loai] || "";
 }
 
 function onSubmit(e) {
   e.preventDefault();
+  if (!DATA) return;
 
   const submitErrorEl = $("submit-error");
-  const isChuyen = loaiTruongEl.value === "chuyen";
-  const idsCanKiemTra = isChuyen
-    ? ["diem-toan", "diem-van", "diem-mon3", "diem-chuyen"]
-    : ["diem-toan", "diem-van", "diem-mon3"];
+  const loai = loaiTruongEl.value;
+  const idsCanKiemTra = ["diem-toan", "diem-van", "diem-mon3"];
+  if (loai === "chuyen") idsCanKiemTra.push("diem-chuyen");
+  if (loai === "tichhop") idsCanKiemTra.push("diem-tichhop");
 
   let hopLe = true;
   let oLoiDauTien = null;
@@ -234,34 +261,52 @@ function onSubmit(e) {
   const toan = parseFloat($("diem-toan").value);
   const van = parseFloat($("diem-van").value);
   const mon3 = parseFloat($("diem-mon3").value);
+  const khuVucFilter = khuVucEl.value;
 
-  let tong, ket, danhSach, isFail = false;
+  const uuTienObj = DATA.congThuc.uuTien.find((o) => String(o.nhom) === uuTienEl.value);
+  const khuyenKhichObj = DATA.congThuc.khuyenKhich.find((o) => o.giai === khuyenKhichEl.value);
+  const congThem = (uuTienObj?.diem || 0) + (khuyenKhichObj?.diem || 0);
 
-  if (isChuyen) {
+  let tong, danhSach, isFail = false;
+
+  if (loai === "chuyen") {
     const diemChuyen = parseFloat($("diem-chuyen").value);
-    tong = toan + van + mon3 + 3 * diemChuyen;
-    const monHoc = DATA.lopChuyen.monHoc.find((m) => m.ten === monChuyenEl.value);
-    danhSach = [{
-      ten: `${DATA.lopChuyen.ten} — ${monHoc.ten}`,
-      khuVuc: DATA.lopChuyen.khuVuc,
-      chuan: monHoc.diemChuan,
-      nv: null,
-    }];
-  } else {
-    const uuTienObj = DATA.congThuc.uuTien.find((o) => String(o.nhom) === uuTienEl.value);
-    const khuyenKhichObj = DATA.congThuc.khuyenKhich.find((o) => o.giai === khuyenKhichEl.value);
-    const congThem = (uuTienObj?.diem || 0) + (khuyenKhichObj?.diem || 0);
-    tong = toan + van + mon3 + congThem;
-    isFail = [toan, van, mon3].some((v) => v <= 1.0);
+    const heSo = DATA.congThuc.chuyen?.heSoMonChuyen ?? 2;
+    tong = toan + van + mon3 + heSo * diemChuyen + congThem;
 
-    const khuVucFilter = khuVucEl.value;
-    const truongLoc = DATA.truongCongLap.filter((t) => !khuVucFilter || t.khuVuc === khuVucFilter);
+    const monChon = monChuyenEl.value;
+    danhSach = [];
+    (DATA.truongChuyen || []).forEach((truong) => {
+      if (khuVucFilter && truong.khuVuc !== khuVucFilter) return;
+      const m = truong.monHoc.find((mm) => mm.ten === monChon);
+      if (!m) return;
+      danhSach.push({ ten: `${truong.ten} — ${m.ten}`, khuVuc: truong.khuVuc, chuan: m.nv1, nv: "NV1" });
+      if (m.nv2 != null) danhSach.push({ ten: `${truong.ten} — ${m.ten}`, khuVuc: truong.khuVuc, chuan: m.nv2, nv: "NV2" });
+    });
+  } else if (loai === "tichhop") {
+    const diemTichHop = parseFloat($("diem-tichhop").value);
+    tong = toan + van + mon3 + diemTichHop;
 
     danhSach = [];
-    truongLoc.forEach((t) => {
+    (DATA.truongTichHop || []).forEach((t) => {
+      if (khuVucFilter && t.khuVuc !== khuVucFilter) return;
       danhSach.push({ ten: t.ten, khuVuc: t.khuVuc, chuan: t.nv1, nv: "NV1" });
       if (t.nv2 != null) danhSach.push({ ten: t.ten, khuVuc: t.khuVuc, chuan: t.nv2, nv: "NV2" });
+      if (t.nv3 != null) danhSach.push({ ten: t.ten, khuVuc: t.khuVuc, chuan: t.nv3, nv: "NV3" });
     });
+  } else {
+    tong = toan + van + mon3 + congThem;
+    const nguongLiet = DATA.congThuc.congLap?.diemLietToiDa ?? 1.0;
+    isFail = [toan, van, mon3].some((v) => v <= nguongLiet);
+
+    danhSach = [];
+    DATA.truongCongLap
+      .filter((t) => !khuVucFilter || t.khuVuc === khuVucFilter)
+      .forEach((t) => {
+        danhSach.push({ ten: t.ten, khuVuc: t.khuVuc, chuan: t.nv1, nv: "NV1" });
+        if (t.nv2 != null) danhSach.push({ ten: t.ten, khuVuc: t.khuVuc, chuan: t.nv2, nv: "NV2" });
+        if (t.nv3 != null) danhSach.push({ ten: t.ten, khuVuc: t.khuVuc, chuan: t.nv3, nv: "NV3" });
+      });
   }
 
   renderResults(tong, danhSach, isFail);
@@ -312,7 +357,7 @@ function renderList(containerId, items, emptyText) {
     row.innerHTML = `
       <div>
         <div class="school-name">${escapeHtml(s.ten)}</div>
-        <div class="school-meta">${escapeHtml(s.khuVuc || "")}${s.nv ? " · " + s.nv : ""} · Điểm chuẩn ${s.chuan.toFixed(2)}</div>
+        <div class="school-meta">${escapeHtml(s.khuVuc || "Chưa xác định khu vực")}${s.nv ? " · " + s.nv : ""} · Điểm chuẩn ${s.chuan.toFixed(2)}</div>
       </div>
       <div class="school-diff">${s.lech === -999 ? "Rớt điều kiện" : dau + s.lech.toFixed(2)}</div>
     `;
